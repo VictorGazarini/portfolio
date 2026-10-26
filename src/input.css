@@ -1,3 +1,10 @@
 /* Arquivo de ENTRADA do Tailwind: você edita este.
    O arquivo css/style.css é GERADO a partir dele, não edite aquele. */
 @import "tailwindcss";
+
+/* Personalizações do tema: Fira Code em todo o site,
+   tanto na fonte padrão (sans) quanto na monoespaçada (mono) */
+@theme {
+  --font-sans: "Fira Code", ui-monospace, monospace;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+}

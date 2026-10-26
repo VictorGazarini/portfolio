@@ -41,6 +41,7 @@ jobs:
           mkdir _site
           cp index.html _site/
           cp -r css _site/
+          cp -r js _site/
 
       - name: Enviar a pasta para o Pages
         uses: actions/upload-pages-artifact@v4
