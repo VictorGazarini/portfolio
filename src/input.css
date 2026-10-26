@@ -18,3 +18,9 @@
     }
   }
 }
+
+/* Impressão / "Salvar como PDF" do currículo: folha A4 com margem */
+@page {
+  size: A4;
+  margin: 14mm;
+}

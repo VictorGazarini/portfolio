@@ -6,6 +6,18 @@
   <title>Victor Gazarini | Modern Workplace</title>
   <meta name="description" content="Portfólio de Victor Gazarini, analista de Modern Workplace: Intune, Entra ID, Autopilot e automação com PowerShell e Graph API.">
 
+  <!-- Prévia ao compartilhar o link (LinkedIn, WhatsApp, etc.): Open Graph.
+       A imagem precisa do endereço completo, com https:// -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://victorgazarini.github.io/portfolio/">
+  <meta property="og:title" content="Victor Gazarini | Analista de Modern Workplace">
+  <meta property="og:description" content="Intune, ConfigMgr e automação com PowerShell e Graph API. Infra que resolve com código.">
+  <meta property="og:image" content="https://victorgazarini.github.io/portfolio/img/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta name="twitter:card" content="summary_large_image">
+
   <!-- Fonte Fira Code (Google Fonts) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +42,8 @@
         <a href="#sobre" class="hidden md:inline hover:underline">sobre mim</a>
         <a href="#projetos" class="hidden md:inline hover:underline">projetos</a>
         <a href="#redes" class="hidden md:inline hover:underline">redes sociais</a>
+        <!-- Currículo: abre numa nova aba (target="_blank"), o portfólio fica aberto atrás -->
+        <a href="curriculo.html" target="_blank" rel="noopener" class="hidden md:inline hover:underline">currículo ↗</a>
       </div>
 
       <!-- Lado direito: botão hambúrguer. Quando o menu abre, o js/menu.js coloca
@@ -49,6 +63,7 @@
         <a href="#sobre" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">SOBRE MIM</a>
         <a href="#projetos" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">PROJETOS</a>
         <a href="#redes" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">REDES SOCIAIS</a>
+        <a href="curriculo.html" target="_blank" rel="noopener" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">CURRÍCULO ↗</a>
         <div class="flex gap-6 mt-6 text-sm text-gray-400">
           <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="hover:text-white">LinkedIn ↗</a>
           <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="hover:text-white">GitHub ↗</a>
@@ -66,13 +81,14 @@
          o desenho fica grudado na tela (sticky) enquanto isso. -->
     <section id="inicio" class="h-[300vh]">
       <div class="sticky top-0 h-screen overflow-hidden">
-        <h1 class="sr-only">Victor Gazarini</h1>
+        <h1 class="sr-only">Victor Gazarini, Analista de Modern Workplace</h1>
         <!-- O JavaScript (js/olho.js) desenha a cena aqui dentro, ocupando a tela toda -->
         <pre id="olho" aria-hidden="true" class="w-full h-full overflow-hidden text-gray-300 text-[8px] md:text-[10px] leading-[1.1] select-none [font-variant-ligatures:none]"></pre>
 
-        <!-- Dica de rolagem estilo terminal: o js/dica.js digita o texto letra por letra
-             e o cursor fica piscando. Some (data-oculto) quando a pessoa rola a página. -->
-        <p id="dica-rolagem" aria-hidden="true" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-sm md:text-base text-gray-300 whitespace-pre select-none pointer-events-none [font-variant-ligatures:none] transition-opacity duration-500 data-oculto:opacity-0"><span id="dica-texto"></span><span id="dica-cursor">█</span></p>
+        <!-- Sessão de terminal: o js/dica.js digita os comandos letra por letra
+             (whoami → nome e cargo → saiba mais) e o cursor fica piscando.
+             Some (data-oculto) quando a pessoa rola a página. -->
+        <div id="terminal" aria-hidden="true" class="absolute bottom-8 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-3rem)] text-sm md:text-base leading-relaxed text-gray-300 select-none pointer-events-none [font-variant-ligatures:none] transition-opacity duration-500 data-oculto:opacity-0"></div>
       </div>
     </section>
 
@@ -84,19 +100,20 @@
         <h2 data-glitch class="text-2xl md:text-4xl mb-6 md:mb-0">SOBRE MIM</h2>
         <p class="text-sm md:text-base leading-relaxed md:text-justify">
           Sou Analista de Modern Workplace e resolvo problemas de infraestrutura com código.
-          No dia a dia administro Microsoft Intune (em modelo RBAC), SCCM/MECM, Entra ID e
-          Autopilot: políticas de conformidade, Conditional Access e troubleshooting de
-          ambientes híbridos. Quando uma tarefa se repete, eu automatizo com PowerShell e
-          Microsoft Graph API.
+          Administro um parque de mais de 30.000 endpoints com Microsoft Intune e ConfigMgr
+          (SCCM): patch management, deploy de software em larga escala, compliance, hardening
+          e Acesso Condicional. Quando uma tarefa se repete, eu automatizo: scripts em
+          PowerShell e Microsoft Graph API para provisionamento e remediação, e relatórios
+          em Power BI com SQL e WQL para inventário e auditoria.
         </p>
       </div>
       <p class="text-sm md:text-base leading-relaxed md:text-justify mt-10">
-        Comecei como Jovem Aprendiz em 2024, passei pelo field service como Analista de
-        Microinformática e cheguei ao Modern Workplace em 2025, então conheço o problema
-        tanto na mesa do usuário quanto no console. Sou graduando em Análise e
-        Desenvolvimento de Sistemas na Universidade Anhembi Morumbi e bolsista concluinte
-        do Santander Tech+ (Ada Tech). Hoje estou focado em automação, cloud e DevOps, e
-        estudando para a certificação MD-102 (Endpoint Administrator).
+        Comecei em 2024 no suporte de campo, como Analista de Microinformática: manutenção de
+        hardware, troubleshooting de rede e rollout de equipamentos para home office. Por isso
+        conheço o problema tanto na mesa do usuário quanto no console. Sou graduando em Análise
+        e Desenvolvimento de Sistemas na Universidade Anhembi Morumbi (previsão: dez/2026)
+        e estou me preparando para a certificação MD-102 (Endpoint Administrator). Meu
+        próximo passo é aprofundar em automação, cloud e DevOps.
       </p>
     </section>
 
