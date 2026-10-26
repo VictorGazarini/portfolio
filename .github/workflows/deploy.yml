@@ -1,0 +1,59 @@
+# Publica o site no GitHub Pages a cada push na branch main
+name: Deploy no GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # permite rodar manualmente pela aba Actions
+
+# Permissões mínimas que o deploy no Pages precisa
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Se dois deploys começarem juntos, só o mais recente segue
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v5
+
+      - name: Instalar o Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Gerar o CSS do Tailwind
+        run: npm run build
+
+      - name: Montar a pasta do site
+        run: |
+          mkdir _site
+          cp index.html _site/
+          cp -r css _site/
+
+      - name: Enviar a pasta para o Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4

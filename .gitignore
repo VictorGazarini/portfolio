@@ -1,0 +1,7 @@
+node_modules/
+
+# Gerado pelo Tailwind (npm run build); em produção o GitHub Actions gera
+css/
+
+# Anotações pessoais para o Claude (não devem ir para o repositório público)
+CLAUDE/
