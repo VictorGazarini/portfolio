@@ -140,28 +140,32 @@ botaoProximo.addEventListener("click", () => {
   }
 });
 
+// O carrossel está no primeiro card? (aí não há o que voltar)
+function noComeco() {
+  return trilho.scrollLeft <= 5;
+}
+
 botaoAnterior.addEventListener("click", () => {
-  // Está no começo? Vai para o último card. Senão, volta um.
-  const noComeco = trilho.scrollLeft <= 5;
-  if (noComeco) {
-    trilho.scrollTo({ left: trilho.scrollWidth });
-  } else {
-    trilho.scrollBy({ left: -tamanhoDoPasso() });
-  }
+  trilho.scrollBy({ left: -tamanhoDoPasso() });
 });
 
 // ===== Setas aparecem do lado do mouse e somem sozinhas =====
 
+// A <div> do carrossel: o lado do mouse é calculado em relação a ela
 const areaDoCarrossel = trilho.parentElement;
+// A seção inteira: as setas ficam fora do carrossel, então o mouse precisa
+// poder sair dele e chegar até a seta sem ela sumir no caminho
+const secaoDosProjetos = trilho.closest("section");
 let temporizador;
 
-// lado: "esquerda", "direita" ou null (nenhuma)
+// lado: "esquerda", "direita" ou null (nenhuma).
+// A da esquerda nunca aparece no primeiro card.
 function mostrarSeta(lado) {
-  botaoAnterior.toggleAttribute("data-visivel", lado === "esquerda");
+  botaoAnterior.toggleAttribute("data-visivel", lado === "esquerda" && !noComeco());
   botaoProximo.toggleAttribute("data-visivel", lado === "direita");
 }
 
-areaDoCarrossel.addEventListener("mousemove", (evento) => {
+secaoDosProjetos.addEventListener("mousemove", (evento) => {
   // Mouse na metade esquerda do carrossel? Seta da esquerda. Senão, da direita.
   const caixa = areaDoCarrossel.getBoundingClientRect();
   const metade = caixa.left + caixa.width / 2;
@@ -174,8 +178,13 @@ areaDoCarrossel.addEventListener("mousemove", (evento) => {
   }, configProjetos.tempoParaSumirASeta);
 });
 
-// Mouse saiu do carrossel: esconde as duas
-areaDoCarrossel.addEventListener("mouseleave", () => {
+// Voltou para o primeiro card (clicando ou arrastando)? Esconde a seta da esquerda
+trilho.addEventListener("scroll", () => {
+  if (noComeco()) botaoAnterior.removeAttribute("data-visivel");
+});
+
+// Mouse saiu da seção: esconde as duas
+secaoDosProjetos.addEventListener("mouseleave", () => {
   clearTimeout(temporizador);
   mostrarSeta(null);
 });

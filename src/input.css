@@ -7,4 +7,14 @@
 @theme {
   --font-sans: "Fira Code", ui-monospace, monospace;
   --font-mono: "Fira Code", ui-monospace, monospace;
+
+  /* Cursor de terminal piscando: cria a classe animate-piscar.
+     step-end faz ele "acender e apagar" de uma vez, sem esmaecer, como num terminal */
+  --animate-piscar: piscar 1.06s step-end infinite;
+
+  @keyframes piscar {
+    50% {
+      opacity: 0;
+    }
+  }
 }

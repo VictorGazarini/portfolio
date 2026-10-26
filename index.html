@@ -26,10 +26,10 @@
 
       <!-- Lado esquerdo: nome + links (no celular, só o nome; o resto fica no menu) -->
       <div class="flex items-center gap-6 lg:gap-8">
-        <a href="#inicio" class="font-semibold hover:underline">victor Gazarini<span class="hidden md:inline"> |</span></a>
-        <a href="#sobre" class="hidden md:inline hover:underline">Sobre Mim</a>
-        <a href="#projetos" class="hidden md:inline hover:underline">Projetos</a>
-        <a href="#redes" class="hidden md:inline hover:underline">Redes Sociais</a>
+        <a href="#inicio" class="font-semibold hover:underline">> victor_gazarini<span class="hidden md:inline"> |</span></a>
+        <a href="#sobre" class="hidden md:inline hover:underline">sobre mim</a>
+        <a href="#projetos" class="hidden md:inline hover:underline">projetos</a>
+        <a href="#redes" class="hidden md:inline hover:underline">redes sociais</a>
       </div>
 
       <!-- Lado direito: botão hambúrguer. Quando o menu abre, o js/menu.js coloca
@@ -62,13 +62,17 @@
        sem atrapalhar o "sticky" do olho -->
   <main class="overflow-x-clip">
     <!-- 2. Hero: olho em arte ASCII.
-         A seção é alta (5 telas) para dar "espaço de rolagem" à animação;
+         A seção é alta (3 telas) para dar "espaço de rolagem" à animação;
          o desenho fica grudado na tela (sticky) enquanto isso. -->
-    <section id="inicio" class="h-[500vh]">
+    <section id="inicio" class="h-[300vh]">
       <div class="sticky top-0 h-screen overflow-hidden">
         <h1 class="sr-only">Victor Gazarini</h1>
         <!-- O JavaScript (js/olho.js) desenha a cena aqui dentro, ocupando a tela toda -->
         <pre id="olho" aria-hidden="true" class="w-full h-full overflow-hidden text-gray-300 text-[8px] md:text-[10px] leading-[1.1] select-none [font-variant-ligatures:none]"></pre>
+
+        <!-- Dica de rolagem estilo terminal: o js/dica.js digita o texto letra por letra
+             e o cursor fica piscando. Some (data-oculto) quando a pessoa rola a página. -->
+        <p id="dica-rolagem" aria-hidden="true" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-sm md:text-base text-gray-300 whitespace-pre select-none pointer-events-none [font-variant-ligatures:none] transition-opacity duration-500 data-oculto:opacity-0"><span id="dica-texto"></span><span id="dica-cursor">█</span></p>
       </div>
     </section>
 
@@ -100,8 +104,8 @@
     <section id="projetos" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
       <h2 data-glitch class="text-2xl md:text-4xl mb-10 md:mb-14">PROJETOS</h2>
 
-      <!-- A margem negativa à direita deixa o carrossel passar da área do conteúdo -->
-      <div class="relative -mr-6 md:-mr-12 lg:-mr-20">
+      <!-- Área do carrossel: as setas ficam fora dela, uma de cada lado -->
+      <div class="relative">
         <!-- Trilho do carrossel: rola na horizontal e "encaixa" em cada card (snap).
              O js/projetos.js coloca na frente os repositórios do GitHub marcados com
              o tópico "portfolio". Um card com data-repo="nome-do-repositório" sai
@@ -132,12 +136,12 @@
         <!-- Setas: começam invisíveis (opacity-0). O js/projetos.js coloca o atributo
              data-visivel na seta do lado em que o mouse está, e ela aparece.
              focus-visible: quem navega pelo teclado (Tab) também vê a seta. -->
-        <button id="projeto-anterior" aria-label="Projeto anterior" class="absolute left-4 top-1/2 -translate-y-1/2 size-12 rounded-full bg-black text-white flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
+        <button id="projeto-anterior" aria-label="Projeto anterior" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full lg:-translate-x-[calc(100%+1rem)] size-12 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
           <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M19 12H5M11 6l-6 6 6 6"/>
           </svg>
         </button>
-        <button id="proximo-projeto" aria-label="Próximo projeto" class="absolute right-4 top-1/2 -translate-y-1/2 size-12 rounded-full bg-black text-white flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
+        <button id="proximo-projeto" aria-label="Próximo projeto" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full lg:translate-x-[calc(100%+1rem)] size-12 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
           <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 12h14M13 6l6 6-6 6"/>
           </svg>
@@ -176,5 +180,6 @@
   <script src="js/olho.js"></script>
   <script src="js/projetos.js"></script>
   <script src="js/menu.js"></script>
+  <script src="js/dica.js"></script>
 </body>
 </html>
