@@ -44,8 +44,8 @@ const config = {
 
   // ----- Linha do tempo da rolagem -----
   // 0 = topo do hero, 1 = fim do hero. Cada efeito acontece num trecho.
-  olhoAbreAte: 0.3,
-  dilatacaoComeca: 0.3,
+  olhoAbreAte: 0.4,
+  dilatacaoComeca: 0.4,
   dilatacaoTermina: 0.55,
   psicodeliaComeca: 0.4,
   psicodeliaTermina: 0.6,
@@ -53,13 +53,13 @@ const config = {
   zoomMaximo: 12,        // o quanto aproxima no fim do mergulho
 
   // ----- Seções surgindo (Sobre Mim, Projetos, Redes Sociais) -----
-  tamanhoInicialDaSecao: 0.5, // começa com metade do tamanho e cresce até o normal
-  desfoqueInicial: 8,         // começa borrada (em pixels) e fica nítida
-  distanciaParaSurgir: 0.7,   // quanto da tela a seção percorre até aparecer inteira
+  tamanhoInicialDaSecao: 0.9, // começa com 90% do tamanho e cresce até o normal
+  desfoqueInicial: 3,         // começa borrada (em pixels) e fica nítida
+  distanciaParaSurgir: 0.35,  // quanto da tela a seção percorre até aparecer inteira
 
   // ----- Glitch dos títulos (SOBRE MIM, PROJETOS...) -----
   caracteresDoGlitch: "-+?°",  // símbolos que aparecem no lugar das letras
-  distanciaDoGlitch: 0.5,      // quanto da tela o título percorre até se "consertar"
+  distanciaDoGlitch: 0.4,      // quanto da tela o título percorre até se "consertar"
   intensidadeDoGlitch: 0.15,   // chance de letras já certas piscarem (0 a 1)
   separacaoDeCores: 2,         // o quanto o vermelho e o ciano se separam (em pixels)
 

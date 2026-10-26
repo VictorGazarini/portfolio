@@ -17,28 +17,45 @@
 
 <body class="bg-black text-gray-100 font-mono">
 
-  <!-- 1. Barra de navegação: faixa branca com borda preta em cima -->
-  <header class="bg-white text-black border-t-8 border-black">
+  <!-- 1. Barra de navegação: faixa branca com borda preta em cima.
+       sticky top-0: fica grudada no topo durante a rolagem (z-50: por cima de tudo) -->
+  <header class="sticky top-0 z-50 bg-white text-black border-t-8 border-black">
 
     <!-- Itens lado a lado: links na esquerda, hambúrguer na direita -->
-    <nav class="flex items-center justify-between px-3 py-2 text-xs">
+    <nav class="flex items-center justify-between px-6 md:px-12 lg:px-20 py-4 text-sm md:text-base">
 
-      <!-- Lado esquerdo: nome + links -->
-      <div class="flex items-center gap-4">
-        <a href="#inicio" class="hover:underline">victor Gazarini |</a>
-        <a href="#sobre" class="hover:underline">Sobre Mim</a>
-        <a href="#projetos" class="hover:underline">Projetos</a>
-        <a href="#redes" class="hover:underline">Redes Sociais</a>
+      <!-- Lado esquerdo: nome + links (no celular, só o nome; o resto fica no menu) -->
+      <div class="flex items-center gap-6 lg:gap-8">
+        <a href="#inicio" class="font-semibold hover:underline">victor Gazarini<span class="hidden md:inline"> |</span></a>
+        <a href="#sobre" class="hidden md:inline hover:underline">Sobre Mim</a>
+        <a href="#projetos" class="hidden md:inline hover:underline">Projetos</a>
+        <a href="#redes" class="hidden md:inline hover:underline">Redes Sociais</a>
       </div>
 
-      <!-- Lado direito: botão hambúrguer (três linhas) -->
-      <button aria-label="Abrir menu">
-        <span class="block w-6 h-0.5 bg-black"></span>
-        <span class="block w-6 h-0.5 bg-black mt-1"></span>
-        <span class="block w-6 h-0.5 bg-black mt-1"></span>
+      <!-- Lado direito: botão hambúrguer. Quando o menu abre, o js/menu.js coloca
+           data-aberto no botão e as três linhas viram um X (classes group-data-aberto:) -->
+      <button id="botao-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu" class="group p-2 -mr-2">
+        <span class="block w-7 h-0.5 bg-black transition duration-300 group-data-aberto:translate-y-2 group-data-aberto:rotate-45"></span>
+        <span class="block w-7 h-0.5 bg-black mt-1.5 transition duration-300 group-data-aberto:opacity-0"></span>
+        <span class="block w-7 h-0.5 bg-black mt-1.5 transition duration-300 group-data-aberto:-translate-y-2 group-data-aberto:-rotate-45"></span>
       </button>
 
     </nav>
+
+    <!-- Menu aberto pelo hambúrguer: cobre a tela, abaixo da barra.
+         O atributo "hidden" esconde; o js/menu.js tira e coloca. -->
+    <div id="menu" hidden class="absolute inset-x-0 top-full h-dvh bg-black text-gray-100 border-t border-gray-800">
+      <nav class="flex flex-col gap-8 px-6 md:px-12 lg:px-20 py-12">
+        <a href="#sobre" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">SOBRE MIM</a>
+        <a href="#projetos" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">PROJETOS</a>
+        <a href="#redes" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">REDES SOCIAIS</a>
+        <div class="flex gap-6 mt-6 text-sm text-gray-400">
+          <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="hover:text-white">LinkedIn ↗</a>
+          <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="hover:text-white">GitHub ↗</a>
+          <a href="mailto:gazarinivictor@gmail.com" class="hover:text-white">E-mail ↗</a>
+        </div>
+      </nav>
+    </div>
   </header>
 
   <!-- overflow-x-clip: corta o que passar da tela na horizontal (o carrossel),
@@ -58,10 +75,10 @@
     <!-- data-surgir: a seção "cresce do centro" ao entrar na tela (efeito em js/olho.js) -->
 
     <!-- 3. Sobre Mim: título à esquerda + texto à direita; embaixo, um parágrafo na largura toda -->
-    <section id="sobre" data-surgir class="relative max-w-3xl mx-auto px-6 py-32">
-      <div class="md:grid md:grid-cols-[auto_1fr] md:gap-12 md:items-center">
-        <h2 data-glitch class="text-xl mb-6 md:mb-0">SOBRE MIM</h2>
-        <p class="text-xs leading-relaxed text-justify">
+    <section id="sobre" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
+      <div class="md:grid md:grid-cols-[14rem_1fr] lg:grid-cols-[18rem_1fr] md:gap-12 md:items-center">
+        <h2 data-glitch class="text-2xl md:text-4xl mb-6 md:mb-0">SOBRE MIM</h2>
+        <p class="text-sm md:text-base leading-relaxed md:text-justify">
           Sou Analista de Modern Workplace e resolvo problemas de infraestrutura com código.
           No dia a dia administro Microsoft Intune (em modelo RBAC), SCCM/MECM, Entra ID e
           Autopilot: políticas de conformidade, Conditional Access e troubleshooting de
@@ -69,7 +86,7 @@
           Microsoft Graph API.
         </p>
       </div>
-      <p class="text-xs leading-relaxed text-justify mt-10">
+      <p class="text-sm md:text-base leading-relaxed md:text-justify mt-10">
         Comecei como Jovem Aprendiz em 2024, passei pelo field service como Analista de
         Microinformática e cheguei ao Modern Workplace em 2025, então conheço o problema
         tanto na mesa do usuário quanto no console. Sou graduando em Análise e
@@ -80,35 +97,35 @@
     </section>
 
     <!-- 4. Projetos: carrossel de cards; o último visível "sai" um pouco para a direita -->
-    <section id="projetos" data-surgir class="relative max-w-3xl mx-auto px-6 py-32">
-      <h2 data-glitch class="text-xl mb-10">PROJETOS</h2>
+    <section id="projetos" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
+      <h2 data-glitch class="text-2xl md:text-4xl mb-10 md:mb-14">PROJETOS</h2>
 
       <!-- A margem negativa à direita deixa o carrossel passar da área do conteúdo -->
-      <div class="relative -mr-6 lg:-mr-16">
+      <div class="relative -mr-6 md:-mr-12 lg:-mr-20">
         <!-- Trilho do carrossel: rola na horizontal e "encaixa" em cada card (snap).
              O js/projetos.js coloca na frente os repositórios do GitHub marcados com
              o tópico "portfolio". Um card com data-repo="nome-do-repositório" sai
              sozinho quando aquele repositório vem do GitHub (evita card repetido). -->
         <ul id="trilho-projetos" class="flex gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none]">
-          <li data-repo="Custom-Badges-Creator-Shields.io" class="snap-start shrink-0 w-56 md:w-60 min-h-52 rounded-xl bg-[#c9d0d9] text-black p-5 flex flex-col">
-            <h3 class="text-sm font-semibold">Gerador de Badges</h3>
-            <p class="text-xs mt-3 flex-1">Converte ícones SVG (Simple Icons) em badges base64 otimizados para URL, com saída em Markdown, HTML e URL. Open source (MIT).</p>
-            <p class="text-[10px] mt-4 opacity-70">Python · Flask · JS · Tailwind · Docker</p>
+          <li data-repo="Custom-Badges-Creator-Shields.io" class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col">
+            <h3 class="text-base md:text-lg font-semibold">Gerador de Badges</h3>
+            <p class="text-sm mt-3 flex-1">Converte ícones SVG (Simple Icons) em badges base64 otimizados para URL, com saída em Markdown, HTML e URL. Open source (MIT).</p>
+            <p class="text-xs mt-4 opacity-70">Python · Flask · JS · Tailwind · Docker</p>
           </li>
-          <li class="snap-start shrink-0 w-56 md:w-60 min-h-52 rounded-xl bg-[#c9d0d9] text-black p-5 flex flex-col">
-            <h3 class="text-sm font-semibold">Autopilot CSV Consolidator</h3>
-            <p class="text-xs mt-3 flex-1">CLI que consolida CSVs de hardware hash do Autopilot e importa via Graph API, com validação de hostname, detecção de duplicados e menu navegável.</p>
-            <p class="text-[10px] mt-4 opacity-70">PowerShell · Graph API · Autopilot</p>
+          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col">
+            <h3 class="text-base md:text-lg font-semibold">Autopilot CSV Consolidator</h3>
+            <p class="text-sm mt-3 flex-1">CLI que consolida CSVs de hardware hash do Autopilot e importa via Graph API, com validação de hostname, detecção de duplicados e menu navegável.</p>
+            <p class="text-xs mt-4 opacity-70">PowerShell · Graph API · Autopilot</p>
           </li>
-          <li class="snap-start shrink-0 w-56 md:w-60 min-h-52 rounded-xl bg-[#c9d0d9] text-black p-5 flex flex-col">
-            <h3 class="text-sm font-semibold">Migração de grupos no Entra ID</h3>
-            <p class="text-xs mt-3 flex-1">Move dispositivos entre grupos via Graph com JSON batching (até 20 requisições por lote) e retry com backoff exponencial contra throttling.</p>
-            <p class="text-[10px] mt-4 opacity-70">PowerShell · Graph API · Entra ID</p>
+          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col">
+            <h3 class="text-base md:text-lg font-semibold">Migração de grupos no Entra ID</h3>
+            <p class="text-sm mt-3 flex-1">Move dispositivos entre grupos via Graph com JSON batching (até 20 requisições por lote) e retry com backoff exponencial contra throttling.</p>
+            <p class="text-xs mt-4 opacity-70">PowerShell · Graph API · Entra ID</p>
           </li>
-          <li class="snap-start shrink-0 w-56 md:w-60 min-h-52 rounded-xl bg-[#c9d0d9] text-black p-5 flex flex-col">
-            <h3 class="text-sm font-semibold">Co-gerenciados → Autopilot</h3>
-            <p class="text-xs mt-3 flex-1">Migração de dispositivos co-gerenciados (SCCM) para o Autopilot, com tratamento de erro que separa falha real de "já é membro".</p>
-            <p class="text-[10px] mt-4 opacity-70">PowerShell · SCCM · Autopilot</p>
+          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col">
+            <h3 class="text-base md:text-lg font-semibold">Co-gerenciados → Autopilot</h3>
+            <p class="text-sm mt-3 flex-1">Migração de dispositivos co-gerenciados (SCCM) para o Autopilot, com tratamento de erro que separa falha real de "já é membro".</p>
+            <p class="text-xs mt-4 opacity-70">PowerShell · SCCM · Autopilot</p>
           </li>
         </ul>
 
@@ -129,25 +146,25 @@
     </section>
 
     <!-- 5. Redes Sociais: três círculos com ícones -->
-    <section id="redes" data-surgir class="relative max-w-3xl mx-auto px-6 py-32">
-      <h2 data-glitch class="text-xl mb-10">REDES SOCIAIS</h2>
+    <section id="redes" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
+      <h2 data-glitch class="text-2xl md:text-4xl mb-10 md:mb-14">REDES SOCIAIS</h2>
 
-      <div class="flex gap-5 md:gap-8">
+      <div class="flex gap-6 md:gap-10">
         <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" aria-label="LinkedIn"
-           class="size-20 md:size-28 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
-          <svg viewBox="0 0 24 24" class="size-8 md:size-10" fill="currentColor" aria-hidden="true">
+           class="size-20 md:size-32 lg:size-36 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-8 md:size-12" fill="currentColor" aria-hidden="true">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
         </a>
         <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" aria-label="GitHub"
-           class="size-20 md:size-28 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
-          <svg viewBox="0 0 24 24" class="size-8 md:size-10" fill="currentColor" aria-hidden="true">
+           class="size-20 md:size-32 lg:size-36 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-8 md:size-12" fill="currentColor" aria-hidden="true">
             <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
           </svg>
         </a>
         <a href="mailto:gazarinivictor@gmail.com" aria-label="E-mail"
-           class="size-20 md:size-28 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
-          <svg viewBox="0 0 24 24" class="size-8 md:size-10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+           class="size-20 md:size-32 lg:size-36 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-8 md:size-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="m22 7-10 6L2 7"/>
           </svg>
@@ -158,5 +175,6 @@
 
   <script src="js/olho.js"></script>
   <script src="js/projetos.js"></script>
+  <script src="js/menu.js"></script>
 </body>
 </html>

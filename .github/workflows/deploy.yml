@@ -43,6 +43,11 @@ jobs:
           cp -r css _site/
           cp -r js _site/
 
+      # Coloca "?v=<commit>" nos links do CSS e do JS. Como o endereço muda a cada
+      # publicação, o navegador baixa a versão nova em vez de usar a guardada (cache)
+      - name: Versionar CSS e JS
+        run: sed -i -E "s#(css/style\.css|js/[a-z]+\.js)\"#\1?v=${GITHUB_SHA::7}\"#g" _site/index.html
+
       - name: Enviar a pasta para o Pages
         uses: actions/upload-pages-artifact@v4
         with:
