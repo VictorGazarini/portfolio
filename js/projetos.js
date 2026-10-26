@@ -19,6 +19,8 @@ const configProjetos = {
   manterCardsDoHtml: true,
   // Quanto tempo (em milissegundos) a seta fica visível depois que o mouse para
   tempoParaSumirASeta: 1500,
+  // Mostrar a janelinha com a prévia da página de destino ao passar o mouse num card com link
+  mostrarPreview: true,
 };
 
 // =====================================================================
@@ -53,7 +55,7 @@ function criarCard(repo) {
   link.target = "_blank";
   link.rel = "noopener";
   link.className =
-    "h-full min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col hover:bg-white transition-colors";
+    "h-full min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col transition duration-300 hover:bg-white hover:-translate-y-2 hover:shadow-[0_10px_40px_rgba(201,208,217,0.35)]";
 
   const nome = document.createElement("h3");
   nome.className = "text-base md:text-lg font-semibold break-words";
@@ -179,3 +181,73 @@ areaDoCarrossel.addEventListener("mouseleave", () => {
   clearTimeout(temporizador);
   mostrarSeta(null);
 });
+
+// ===== Preview da página de destino =====
+// Ao passar o mouse num card com link, aparece uma janelinha que segue o mouse,
+// com a imagem de prévia da página e o endereço. Para repositórios do GitHub,
+// a imagem vem do próprio GitHub (a mesma que aparece ao compartilhar o link).
+
+// Só em aparelhos com mouse: no celular, "passar o mouse" não existe
+const temMouse = window.matchMedia("(hover: hover)").matches;
+
+// Endereço da imagem de prévia de um link (ou null se não houver)
+function imagemDePrevia(endereco) {
+  const github = endereco.match(/github\.com\/([^/]+)\/([^/?#]+)/);
+  if (github) {
+    return "https://opengraph.githubassets.com/1/" + github[1] + "/" + github[2];
+  }
+  return null;
+}
+
+if (configProjetos.mostrarPreview && temMouse) {
+  // A janelinha: criada uma vez e reaproveitada para todos os cards
+  const janela = document.createElement("div");
+  janela.setAttribute("aria-hidden", "true");
+  janela.className =
+    "fixed top-0 left-0 z-40 w-80 rounded-xl overflow-hidden border border-gray-700 bg-black shadow-2xl pointer-events-none opacity-0 scale-95 transition duration-200 data-visivel:opacity-100 data-visivel:scale-100";
+
+  const imagem = document.createElement("img");
+  imagem.alt = "";
+  imagem.className = "w-full aspect-[2/1] object-cover bg-gray-900";
+
+  const endereco = document.createElement("p");
+  endereco.className = "px-3 py-2 text-xs text-gray-400 truncate";
+
+  janela.append(imagem, endereco);
+  document.body.append(janela);
+
+  // Mouse entrou num card com link: prepara e mostra a janelinha
+  trilho.addEventListener("mouseover", (evento) => {
+    const link = evento.target.closest("a");
+    if (!link) return;
+    const previa = imagemDePrevia(link.href);
+    if (!previa) return;
+
+    if (imagem.src !== previa) imagem.src = previa;
+    endereco.textContent = link.href.replace("https://", "") + " ↗";
+    janela.setAttribute("data-visivel", "");
+  });
+
+  // Mouse andando: a janelinha segue, sem sair da tela
+  trilho.addEventListener("mousemove", (evento) => {
+    const distancia = 20; // espaço entre o mouse e a janelinha
+    let x = evento.clientX + distancia;
+    let y = evento.clientY + distancia;
+    // Passaria da borda direita? Mostra do lado esquerdo do mouse
+    if (x + janela.offsetWidth > window.innerWidth) {
+      x = evento.clientX - janela.offsetWidth - distancia;
+    }
+    // Passaria da borda de baixo? Mostra acima do mouse
+    if (y + janela.offsetHeight > window.innerHeight) {
+      y = evento.clientY - janela.offsetHeight - distancia;
+    }
+    janela.style.translate = x + "px " + y + "px";
+  });
+
+  // Mouse saiu do card (e não foi para dentro dele mesmo): esconde
+  trilho.addEventListener("mouseout", (evento) => {
+    const link = evento.target.closest("a");
+    if (link && link.contains(evento.relatedTarget)) return;
+    janela.removeAttribute("data-visivel");
+  });
+}

@@ -126,35 +126,45 @@ function medirTela() {
   linhas = Math.floor(tela.clientHeight / alturaCaractere);
 }
 
-// Quantos caracteres valem "1" na régua do olho (cabe na largura e na altura)
+// Quantos caracteres valem "1" na régua do olho.
+// O olho precisa caber na largura E na altura da tela. Na altura, conta o
+// quanto a lente (olho de peixe) aumenta o olho aberto, senão ele "estoura".
 function calcularEscala() {
-  return Math.min((colunas * config.tamanhoDoOlho) / 2, (linhas * proporcao) / 1.1);
+  const meiaAlturaDoOlho = desfazerLente(config.alturaDoOlho + config.espessuraBorda + 0.05);
+  const cabeNaLargura = (colunas * config.tamanhoDoOlho) / 2;
+  const cabeNaAltura = (linhas * proporcao) / 2 / meiaAlturaDoOlho;
+  return Math.min(cabeNaLargura, cabeNaAltura);
 }
 
 function calcularRaioPupila(dilatacao) {
   return config.pupilaMinima + dilatacao * (config.pupilaMaxima - config.pupilaMinima);
 }
 
-// Converte um raio da régua do olho para caracteres na tela,
-// desfazendo a lente (olho de peixe) e o zoom do mergulho
-function raioNaTela(raio, zoom) {
-  const alvo = raio * zoom;
+// A lente (olho de peixe) aumenta o que está perto do centro.
+// Esta função faz a conta ao contrário: dado um tamanho no desenho do olho,
+// devolve o tamanho que ele aparece na tela (na régua do olho).
+function desfazerLente(alvo) {
+  if (alvo >= 1) return alvo; // fora da lente não há distorção
+  // Procura por tentativas o raio da tela que, depois da distorção,
+  // vira o "alvo" (cada tentativa corta o intervalo pela metade)
   let r = alvo;
-  if (alvo < 1) {
-    // Dentro da lente: procura por tentativas o raio da tela que,
-    // depois da distorção, vira o "alvo" (cada tentativa corta o intervalo pela metade)
-    let menor = 0;
-    let maior = 1;
-    for (let i = 0; i < 20; i++) {
-      r = (menor + maior) / 2;
-      if (r * (1 - config.olhoDePeixe * (1 - r * r)) < alvo) {
-        menor = r;
-      } else {
-        maior = r;
-      }
+  let menor = 0;
+  let maior = 1;
+  for (let i = 0; i < 20; i++) {
+    r = (menor + maior) / 2;
+    if (r * (1 - config.olhoDePeixe * (1 - r * r)) < alvo) {
+      menor = r;
+    } else {
+      maior = r;
     }
   }
-  return r * calcularEscala();
+  return r;
+}
+
+// Converte um raio da régua do olho para caracteres na tela,
+// desfazendo a lente e o zoom do mergulho
+function raioNaTela(raio, zoom) {
+  return desfazerLente(raio * zoom) * calcularEscala();
 }
 
 // Desenha o olho e devolve uma grade: uma lista de linhas, cada linha uma lista de caracteres
@@ -487,7 +497,17 @@ function quadro(agora) {
 // Quem pediu ao sistema menos animação vê o olho aberto e parado
 const semAnimacao = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// A barra do topo é fixa (sticky) e ficaria por cima da animação.
+// Então a área do olho começa logo abaixo dela e ocupa só o resto da tela.
+function encaixarAbaixoDaBarra() {
+  const alturaDaBarra = document.querySelector("header").offsetHeight;
+  const area = tela.parentElement; // a <div> sticky que envolve o <pre>
+  area.style.top = alturaDaBarra + "px";
+  area.style.height = "calc(100dvh - " + alturaDaBarra + "px)";
+}
+
 function iniciar() {
+  encaixarAbaixoDaBarra();
   medirTela();
   particulas = [];
   if (semAnimacao) {
