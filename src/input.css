@@ -63,7 +63,7 @@
   --color-cartao-texto: #073642;  /* base02: texto escuro sobre o cinza */
   --color-cartao-titulo: #002b36; /* base03: título dos cards na cor dos outros títulos (a da barra) */
   --color-cartao-hover: #fdf6e3;  /* base3 (no escuro: branco) */
-  --color-detalhe: #b58900;       /* yellow: ícones e stacks dentro dos cards */
+  --color-detalhe: #073642;       /* ícones e stacks: a mesma cor do texto do card (como no tema escuro) */
   /* Títulos e links com o mouse em cima: a mesma cor da barra (no escuro: branco) */
   --color-destaque: #002b36;      /* base03 */
 }

@@ -44,47 +44,89 @@ function escolherRepositorios(repositorios) {
 // Cria o card de um repositório, no mesmo visual dos cards do HTML.
 // Os textos entram com textContent (e não innerHTML): assim, nada que venha
 // da API é interpretado como código na página.
+// Aceita só endereços http/https (o campo "About" do repositório é texto livre)
+function linkSeguro(endereco) {
+  try {
+    const url = new URL(endereco);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.href : null;
+  } catch (erro) {
+    return null; // vazio ou inválido
+  }
+}
+
 function criarCard(repo) {
   const item = document.createElement("li");
   item.className = "snap-start shrink-0 w-64 md:w-72 lg:w-80";
 
-  const link = document.createElement("a");
-  link.href = repo.html_url;
-  link.target = "_blank";
-  link.rel = "noopener";
-  link.className =
-    "h-full min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:bg-cartao-hover hover:scale-[1.04]";
+  // Para onde o card leva: o site do projeto (o link do "About" do repositório)
+  // ou, se ele não tiver site, o próprio repositório
+  const site = linkSeguro(repo.homepage);
+  const nomeDoProjeto = repo.name.replace(/[-_]/g, " "); // "meu-projeto" vira "meu projeto"
 
+  // relative: serve de referência para a "camada" do link (abaixo) cobrir o card todo
+  const card = document.createElement("div");
+  card.className =
+    "relative h-full min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:bg-cartao-hover hover:scale-[1.04]";
+
+  // O link principal fica no título. after:absolute after:inset-0 cria uma camada
+  // invisível que cobre o card inteiro: clicar em qualquer lugar do card abre o link
   const nome = document.createElement("h3");
   nome.className = "text-cartao-titulo text-base md:text-lg font-semibold break-words";
-  nome.textContent = repo.name.replace(/[-_]/g, " "); // "meu-projeto" vira "meu projeto"
+  const link = document.createElement("a");
+  link.href = site || repo.html_url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.className = "after:absolute after:inset-0 after:content-['']";
+  link.textContent = nomeDoProjeto;
+  link.setAttribute("aria-label", nomeDoProjeto + (site ? ": abrir o site do projeto" : ": abrir o repositório"));
+  nome.append(link);
 
   const descricao = document.createElement("p");
   descricao.className = "text-sm mt-3 flex-1";
   descricao.textContent = repo.description || "Sem descrição ainda.";
 
-  // Etiquetas: a linguagem principal + os tópicos (menos o tópico do filtro)
-  const etiquetas = [repo.language, ...(repo.topics || [])]
-    .filter((etiqueta) => etiqueta && etiqueta !== configProjetos.topico)
-    .slice(0, 4);
+  // Etiquetas: todas as linguagens do repositório, da mais usada para a menos usada.
+  // Se a lista não carregou, fica só a linguagem principal.
+  const etiquetas = repo.linguagens && repo.linguagens.length ? repo.linguagens : [repo.language].filter(Boolean);
   // Rodapé: ícone do GitHub no canto inferior esquerdo + etiquetas ao lado
   const rodape = document.createElement("div");
-  rodape.className = "flex items-center gap-2 mt-4";
+  rodape.className = "flex items-start gap-2 mt-4";
 
-  const icone = document.createElement("span");
-  icone.className = "shrink-0 text-detalhe";
-  icone.setAttribute("aria-label", "Repositório no GitHub");
+  // O ícone do GitHub tem o próprio link (sempre para o código).
+  // relative z-10: fica por cima da camada do card, então clicar nele abre o repositório
+  const icone = document.createElement("a");
+  icone.href = repo.html_url;
+  icone.target = "_blank";
+  icone.rel = "noopener";
+  icone.className = "relative z-10 shrink-0 text-detalhe hover:scale-125 transition-transform";
+  icone.setAttribute("aria-label", "Ver o código de " + nomeDoProjeto + " no GitHub");
+  icone.title = "Ver o código no GitHub";
   // O SVG é um texto fixo escrito aqui (não vem da API), então pode usar innerHTML
   icone.innerHTML = ICONE_GITHUB;
 
   const textoEtiquetas = document.createElement("p");
-  textoEtiquetas.className = "text-xs text-detalhe opacity-70 claro:opacity-100";
+  textoEtiquetas.className = "text-xs text-detalhe opacity-70";
   textoEtiquetas.textContent = etiquetas.join(" · ");
 
   rodape.append(icone, textoEtiquetas);
-  link.append(nome, descricao, rodape);
-  item.append(link);
+
+  card.append(nome, descricao, rodape);
+  item.append(card);
   return item;
+}
+
+// Linguagens do repositório, da mais usada para a menos usada.
+// A API devolve { "JavaScript": 14690, "HTML": 10771, ... } (quantidade de código de cada uma).
+// Se falhar, repo.linguagens fica vazio e o card mostra só a linguagem principal.
+async function buscarLinguagens(repo) {
+  try {
+    const resposta = await fetch(repo.languages_url);
+    if (!resposta.ok) return;
+    const quantidades = await resposta.json();
+    repo.linguagens = Object.keys(quantidades).sort((a, b) => quantidades[b] - quantidades[a]);
+  } catch (erro) {
+    // sem internet ou limite da API: segue sem a lista
+  }
 }
 
 // "async" permite usar "await": esperar a resposta da internet sem travar a página
@@ -97,6 +139,9 @@ async function carregarRepositorios() {
 
     const repositorios = escolherRepositorios(await resposta.json());
     if (repositorios.length === 0) return; // nenhum marcado: ficam os cards do HTML
+
+    // Busca as linguagens de todos os repositórios ao mesmo tempo (Promise.all)
+    await Promise.all(repositorios.map(buscarLinguagens));
 
     const cardsDoGithub = repositorios.map(criarCard);
 
