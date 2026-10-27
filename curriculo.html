@@ -22,37 +22,105 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap">
 
+  <!-- Tema (claro/escuro), aplicado antes da página aparecer, para não "piscar" o tema errado.
+       Vem do endereço (?tema=claro, colocado pelo js/tema.js ao clicar num link do site)
+       ou, se não vier, do que ficou salvo no navegador. -->
+  <script>
+    (function () {
+      var tema = new URLSearchParams(location.search).get("tema");
+      try {
+        if (tema) localStorage.setItem("tema", tema);
+        else tema = localStorage.getItem("tema");
+      } catch (erro) {}
+      if (tema === "claro") document.documentElement.dataset.tema = "claro";
+    })();
+  </script>
+
   <!-- CSS gerado pelo Tailwind (o mesmo do portfólio) -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <!-- print: = estilos usados só na impressão / "Salvar como PDF" (fundo branco, texto preto) -->
-<body class="bg-black text-gray-100 font-mono print:bg-white print:text-black">
+<body class="bg-fundo text-texto font-mono transition-colors duration-300 print:bg-white print:text-black">
 
-  <!-- Barra do topo (some na impressão) -->
-  <header class="sticky top-0 z-50 bg-white text-black border-t-8 border-black print:hidden">
-    <nav class="flex items-center justify-between px-6 md:px-12 lg:px-20 py-4 text-sm md:text-base">
-      <a href="index.html" class="font-semibold hover:underline">> victor_gazarini</a>
-      <!-- O js/curriculo.js abre a janela de impressão; lá, escolha "Salvar como PDF" -->
-      <button id="baixar-pdf" class="rounded-full bg-black text-white px-4 py-2 hover:scale-105 transition-transform">baixar PDF ↓</button>
+  <header class="sticky top-0 z-50 print:hidden bg-barra text-barra-texto border-t-8 border-barra-borda">
+
+    <!-- Itens lado a lado: links na esquerda, hambúrguer na direita -->
+    <!-- max-[359px]:text-xs: em celulares bem estreitos a letra diminui um pouco, para caber numa linha -->
+    <nav class="flex items-center justify-between px-4 sm:px-6 md:px-12 lg:px-20 py-4 text-sm max-[359px]:text-xs md:text-base whitespace-nowrap">
+
+      <!-- Lado esquerdo: nome + links (no celular, só o nome; o resto fica no menu) -->
+      <div class="flex items-center gap-4 md:gap-6 lg:gap-8">
+        <a href="index.html#inicio" class="font-semibold hover:underline">> victor_gazarini<span class="hidden md:inline"> |</span></a>
+        <a href="index.html#sobre" class="hidden md:inline hover:underline">sobre mim</a>
+        <a href="index.html#projetos" class="hidden md:inline hover:underline">projetos</a>
+        <a href="index.html#redes" class="hidden md:inline hover:underline">redes sociais</a>
+        <!-- Você está aqui: aria-current avisa leitores de tela que esta é a página atual -->
+        <a href="curriculo.html" aria-current="page" class="hidden md:inline underline">currículo</a>
+      </div>
+
+      <!-- Lado direito: botão de tema + botão hambúrguer -->
+      <div class="flex items-center gap-1 md:gap-3">
+
+        <!-- Botão de tema (js/tema.js): alterna entre o escuro (padrão) e o Solarized Light.
+             O sol aparece no tema escuro e a lua no claro (variante claro: do src/input.css) -->
+        <button id="botao-tema" aria-label="Mudar para o tema claro" class="p-1.5 hover:scale-110 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-5 md:size-6 claro:hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg viewBox="0 0 24 24" class="size-5 md:size-6 hidden claro:block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+
+        <!-- O js/curriculo.js abre a janela de impressão; lá, escolha "Salvar como PDF".
+             No celular mostra só "PDF ↓" para caber na barra -->
+        <button id="baixar-pdf" class="rounded-full bg-barra-texto text-barra px-3 md:px-4 py-1.5 md:py-2 hover:scale-105 transition-transform"><span class="hidden sm:inline">baixar </span>PDF ↓</button>
+
+        <!-- Botão hambúrguer. Quando o menu abre, o js/menu.js coloca
+             data-aberto no botão e as três linhas viram um X (classes group-data-aberto:) -->
+        <button id="botao-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu" class="group p-1.5 -mr-1.5">
+          <span class="block w-6 md:w-7 h-0.5 bg-barra-texto transition duration-300 group-data-aberto:translate-y-2 group-data-aberto:rotate-45"></span>
+          <span class="block w-6 md:w-7 h-0.5 bg-barra-texto mt-1.5 transition duration-300 group-data-aberto:opacity-0"></span>
+          <span class="block w-6 md:w-7 h-0.5 bg-barra-texto mt-1.5 transition duration-300 group-data-aberto:-translate-y-2 group-data-aberto:-rotate-45"></span>
+        </button>
+      </div>
+
     </nav>
+
+    <!-- Menu aberto pelo hambúrguer: cobre a tela, abaixo da barra.
+         O atributo "hidden" esconde; o js/menu.js tira e coloca. -->
+    <div id="menu" hidden class="absolute inset-x-0 top-full h-dvh bg-fundo text-texto border-t border-borda-fraca">
+      <nav class="flex flex-col gap-8 px-6 md:px-12 lg:px-20 py-12">
+        <a href="index.html#sobre" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">SOBRE MIM</a>
+        <a href="index.html#projetos" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">PROJETOS</a>
+        <a href="index.html#redes" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">REDES SOCIAIS</a>
+        <a href="curriculo.html" aria-current="page" class="text-3xl md:text-5xl underline">CURRÍCULO</a>
+        <div class="flex gap-6 mt-6 text-sm text-suave">
+          <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="hover:text-destaque">LinkedIn ↗</a>
+          <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="hover:text-destaque">GitHub ↗</a>
+          <a href="mailto:gazarinivictor@gmail.com" class="hover:text-destaque">E-mail ↗</a>
+        </div>
+      </nav>
+    </div>
   </header>
 
   <main class="max-w-3xl mx-auto px-6 md:px-12 py-16 md:py-24 print:max-w-none print:p-0">
 
     <!-- Cabeçalho do currículo -->
-    <h1 class="text-3xl md:text-5xl font-semibold">Victor Gazarini</h1>
+    <h1 class="text-destaque print:text-black text-3xl md:text-5xl font-semibold">Victor Gazarini</h1>
     <p class="mt-3 text-lg md:text-xl">Analista de Modern Workplace</p>
-    <p class="mt-4 text-sm text-gray-400 print:text-gray-700">
+    <p class="mt-4 text-sm text-suave print:text-gray-700">
       São Paulo ·
-      <a href="mailto:gazarinivictor@gmail.com" class="underline hover:text-white">gazarinivictor@gmail.com</a> ·
-      <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="underline hover:text-white">LinkedIn</a> ·
-      <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="underline hover:text-white">GitHub</a>
+      <a href="mailto:gazarinivictor@gmail.com" class="underline hover:text-destaque">gazarinivictor@gmail.com</a> ·
+      <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="underline hover:text-destaque">LinkedIn</a> ·
+      <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="underline hover:text-destaque">GitHub</a>
     </p>
 
     <!-- Resumo -->
     <section class="mt-14 print:mt-8">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Resumo Profissional</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Resumo Profissional</h2>
       <p class="text-sm leading-relaxed">
         Analista de Modern Workplace com experiência robusta na administração e sustentação de
         parques tecnológicos de grande porte. Atuo ativamente no gerenciamento unificado de endpoints
@@ -66,15 +134,15 @@
 
     <!-- Experiência -->
     <section class="mt-14 print:mt-8">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Experiência de Trabalho</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Experiência de Trabalho</h2>
 
       <article class="mb-10 print:mb-5 print:break-inside-avoid">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 class="font-semibold">Analista de Modern Workplace <span class="font-normal text-gray-400 print:text-gray-700">· Atento</span></h3>
-          <p class="text-sm text-gray-400 print:text-gray-700">jun 2025 – atual</p>
+          <h3 class="font-semibold">Analista de Modern Workplace <span class="font-normal text-suave print:text-gray-700">· Atento</span></h3>
+          <p class="text-sm text-suave print:text-gray-700">jun 2025 – atual</p>
         </div>
         <!-- list-['>_']: cada item começa com "> ", como uma linha de terminal -->
-        <ul class="mt-4 space-y-2 pl-5 text-sm leading-relaxed list-['>_'] marker:text-gray-500 print:mt-2 print:space-y-1">
+        <ul class="mt-4 space-y-2 pl-5 text-sm leading-relaxed list-['>_'] marker:text-suave print:mt-2 print:space-y-1">
           <li>Administração e sustentação de infraestrutura de endpoints (MDM/MAM) em larga escala (+30.000 endpoints) utilizando Microsoft Intune e ConfigMgr (SCCM), garantindo a conformidade e a segurança do parque tecnológico remoto.</li>
           <li>Planejamento e execução de Patch Management (atualizações de segurança e SO) e deploys massivos de software, assegurando a aderência às SLAs de segurança e minimizando impactos na operação.</li>
           <li>Desenvolvimento de automações avançadas em PowerShell para provisionamento de software, aplicação de políticas e remediação proativa de incidentes, reduzindo o tempo de atendimento e a necessidade de intervenções manuais.</li>
@@ -86,10 +154,10 @@
 
       <article class="print:break-inside-avoid">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 class="font-semibold">Analista de Microinformática <span class="font-normal text-gray-400 print:text-gray-700">· Atento</span></h3>
-          <p class="text-sm text-gray-400 print:text-gray-700">abr 2024 – jun 2025</p>
+          <h3 class="font-semibold">Analista de Microinformática <span class="font-normal text-suave print:text-gray-700">· Atento</span></h3>
+          <p class="text-sm text-suave print:text-gray-700">abr 2024 – jun 2025</p>
         </div>
-        <ul class="mt-4 space-y-2 pl-5 text-sm leading-relaxed list-['>_'] marker:text-gray-500 print:mt-2 print:space-y-1">
+        <ul class="mt-4 space-y-2 pl-5 text-sm leading-relaxed list-['>_'] marker:text-suave print:mt-2 print:space-y-1">
           <li>Atuação direta em Field Service e suporte de campo (on-site), executando manutenção preventiva e corretiva de hardware (desktops, notebooks e periféricos) e infraestrutura física, garantindo a estabilidade da operação local.</li>
           <li>Troubleshooting prático em camada física e lógica, realizando o diagnóstico e a resolução de incidentes complexos de conectividade, cabeamento e redes locais (VLANs).</li>
           <li>Execução de rotinas de Deploy e Rollout de equipamentos, orquestrando a preparação, configuração física (imagem e softwares base) e logística de expedição de ativos de TI para colaboradores em regime de home office.</li>
@@ -101,11 +169,11 @@
 
     <!-- Projetos -->
     <section class="mt-14 print:mt-8 print:break-inside-avoid">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Projetos Pessoais</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Projetos Pessoais</h2>
       <h3 class="font-semibold">
-        <a href="https://github.com/VictorGazarini/Custom-Badges-Creator-Shields.io" target="_blank" rel="noopener" class="underline hover:text-white">Gerador de Custom Badges (Shields.io) ↗</a>
+        <a href="https://github.com/VictorGazarini/Custom-Badges-Creator-Shields.io" target="_blank" rel="noopener" class="underline hover:text-destaque">Gerador de Custom Badges (Shields.io) ↗</a>
       </h3>
-      <p class="mt-2 text-sm text-gray-400 print:text-gray-700">Python · Flask · Tailwind CSS · HTML · JavaScript · API REST · Docker</p>
+      <p class="mt-2 text-sm text-suave print:text-gray-700">Python · Flask · Tailwind CSS · HTML · JavaScript · API REST · Docker</p>
       <p class="mt-3 text-sm leading-relaxed">
         Desenvolvimento de uma ferramenta stateless para a criação de badges customizadas em tempo
         real integrando funcionalidades do Shields.io embutido com um conversor SVG para maior
@@ -117,28 +185,28 @@
 
     <!-- Formação -->
     <section class="mt-14 print:mt-8 print:break-inside-avoid">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Formação Acadêmica</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Formação Acadêmica</h2>
       <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-        <h3 class="font-semibold">Análise e Desenvolvimento de Sistemas <span class="font-normal text-gray-400 print:text-gray-700">· Universidade Anhembi Morumbi</span></h3>
-        <p class="text-sm text-gray-400 print:text-gray-700">previsão: dez 2026</p>
+        <h3 class="font-semibold">Análise e Desenvolvimento de Sistemas <span class="font-normal text-suave print:text-gray-700">· Universidade Anhembi Morumbi</span></h3>
+        <p class="text-sm text-suave print:text-gray-700">previsão: dez 2026</p>
       </div>
     </section>
 
     <!-- Habilidades -->
     <section class="mt-14 print:mt-8 print:break-inside-avoid">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Habilidades Técnicas</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Habilidades Técnicas</h2>
       <!-- Cada habilidade vira uma "etiqueta"; na impressão, viram texto simples separado por vírgula -->
       <ul class="flex flex-wrap gap-2 text-xs print:gap-x-1 print:gap-y-0">
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">PowerShell Scripting</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Microsoft Intune (MDM/MAM)</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Microsoft Configuration Manager (ConfigMgr)</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Automação de tarefas com scripts em PowerShell</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Relatórios e dashboards em Power BI e Excel com SQL e WQL</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Gerenciamento de Identidades (Azure AD)</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Gerenciamento de sistemas operacionais e redes</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Resolução de problemas e suporte técnico</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Acesso remoto e manutenção de equipamentos</li>
-        <li class="border border-gray-700 rounded-full px-3 py-1 print:border-0 print:p-0">Azure e Active Directory</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">PowerShell Scripting</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Microsoft Intune (MDM/MAM)</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Microsoft Configuration Manager (ConfigMgr)</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Automação de tarefas com scripts em PowerShell</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Relatórios e dashboards em Power BI e Excel com SQL e WQL</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Gerenciamento de Identidades (Azure AD)</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Gerenciamento de sistemas operacionais e redes</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Resolução de problemas e suporte técnico</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0 print:after:content-[',']">Acesso remoto e manutenção de equipamentos</li>
+        <li class="border border-borda rounded-full px-3 py-1 print:border-0 print:p-0">Azure e Active Directory</li>
       </ul>
     </section>
 
@@ -146,12 +214,12 @@
     <section class="mt-14 print:mt-8">
       <!-- Título + primeiro curso juntos: na impressão, o título nunca fica sozinho no fim da página -->
       <div class="print:break-inside-avoid">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Cursos Livres</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Cursos Livres</h2>
 
       <article class="mb-8 print:mb-4">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 class="font-semibold">MD-102 Endpoint Administrator Associate course with SIMS! <span class="font-normal text-gray-400 print:text-gray-700">· Udemy</span></h3>
-          <p class="text-sm text-gray-400 print:text-gray-700">em andamento</p>
+          <h3 class="font-semibold">MD-102 Endpoint Administrator Associate course with SIMS! <span class="font-normal text-suave print:text-gray-700">· Udemy</span></h3>
+          <p class="text-sm text-suave print:text-gray-700">em andamento</p>
         </div>
         <p class="mt-3 text-sm leading-relaxed print:mt-1">
           Administração e provisionamento de dispositivos integrados ao Microsoft Entra ID e Microsoft
@@ -166,8 +234,8 @@
 
       <article class="mb-8 print:mb-4 print:break-inside-avoid">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 class="font-semibold">Intune (MDM / MAM) Microsoft training course with HANDS ON <span class="font-normal text-gray-400 print:text-gray-700">· Udemy</span></h3>
-          <p class="text-sm text-gray-400 print:text-gray-700">em andamento</p>
+          <h3 class="font-semibold">Intune (MDM / MAM) Microsoft training course with HANDS ON <span class="font-normal text-suave print:text-gray-700">· Udemy</span></h3>
+          <p class="text-sm text-suave print:text-gray-700">em andamento</p>
         </div>
         <p class="mt-3 text-sm leading-relaxed print:mt-1">
           Gerenciamento e provisionamento de dispositivos multiplataforma (Windows, Android, iOS/macOS)
@@ -181,8 +249,8 @@
 
       <article class="print:break-inside-avoid">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 class="font-semibold">Soluções Integradas IoT <span class="font-normal text-gray-400 print:text-gray-700">· Senai</span></h3>
-          <p class="text-sm text-gray-400 print:text-gray-700">concluído</p>
+          <h3 class="font-semibold">Soluções Integradas IoT <span class="font-normal text-suave print:text-gray-700">· Senai</span></h3>
+          <p class="text-sm text-suave print:text-gray-700">concluído</p>
         </div>
         <p class="mt-3 text-sm leading-relaxed print:mt-1">
           Integração e conectividade de microcontroladores e CLPs via protocolo MQTT, desenvolvimento de
@@ -193,7 +261,7 @@
 
     <!-- Idiomas -->
     <section class="mt-14 print:mt-8 print:break-inside-avoid">
-      <h2 class="text-sm uppercase tracking-widest text-gray-400 border-b border-gray-800 pb-2 mb-6 print:text-black print:border-black print:mb-3">Idiomas</h2>
+      <h2 class="text-sm uppercase tracking-widest text-suave border-b border-borda-fraca pb-2 mb-6 print:text-black print:border-black print:mb-3">Idiomas</h2>
       <ul class="space-y-1 text-sm">
         <li>Inglês: intermediário (B1 CEFR)</li>
         <li>Espanhol: iniciante (A1 CEFR)</li>
@@ -203,5 +271,7 @@
   </main>
 
   <script src="js/curriculo.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/tema.js"></script>
 </body>
 </html>

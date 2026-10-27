@@ -268,7 +268,8 @@ function desenharOlho(abertura, dilatacao, zoom) {
         }
       }
 
-      // Transforma o brilho num caractere da rampa
+      // Transforma o brilho num caractere da rampa.
+      // O desenho é o mesmo nos dois temas: só a cor muda (pelo CSS, text-arte)
       fileira.push(rampa[Math.round(limitar(brilho) * (rampa.length - 1))]);
     }
 
@@ -423,7 +424,7 @@ function atualizarParticulasDosTitulos(dt) {
 
     const simbolo = document.createElement("span");
     simbolo.setAttribute("aria-hidden", "true");
-    simbolo.className = "absolute left-0 top-0 text-xs text-gray-400 pointer-events-none select-none";
+    simbolo.className = "absolute left-0 top-0 text-xs text-suave pointer-events-none select-none";
     simbolo.textContent = caractereAleatorio();
     // Fica dentro da seção do título (que tem "relative", então serve de referência de posição)
     titulo.closest("[data-surgir]").appendChild(simbolo);
@@ -517,6 +518,8 @@ function iniciar() {
 
 iniciar();
 window.addEventListener("resize", iniciar);
+// Trocou o tema (js/tema.js): redesenha (importa quando a animação está desligada)
+window.addEventListener("tema", iniciar);
 // Mede de novo quando a fonte (Fira Code) terminar de carregar
 document.fonts.ready.then(iniciar);
 

@@ -53,10 +53,10 @@ function criarCard(repo) {
   link.target = "_blank";
   link.rel = "noopener";
   link.className =
-    "h-full min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col transition duration-300 hover:bg-white hover:scale-[1.04]";
+    "h-full min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:bg-cartao-hover hover:scale-[1.04]";
 
   const nome = document.createElement("h3");
-  nome.className = "text-base md:text-lg font-semibold break-words";
+  nome.className = "text-cartao-titulo text-base md:text-lg font-semibold break-words";
   nome.textContent = repo.name.replace(/[-_]/g, " "); // "meu-projeto" vira "meu projeto"
 
   const descricao = document.createElement("p");
@@ -72,13 +72,13 @@ function criarCard(repo) {
   rodape.className = "flex items-center gap-2 mt-4";
 
   const icone = document.createElement("span");
-  icone.className = "shrink-0";
+  icone.className = "shrink-0 text-detalhe";
   icone.setAttribute("aria-label", "Repositório no GitHub");
   // O SVG é um texto fixo escrito aqui (não vem da API), então pode usar innerHTML
   icone.innerHTML = ICONE_GITHUB;
 
   const textoEtiquetas = document.createElement("p");
-  textoEtiquetas.className = "text-xs opacity-70";
+  textoEtiquetas.className = "text-xs text-detalhe opacity-70 claro:opacity-100";
   textoEtiquetas.textContent = etiquetas.join(" · ");
 
   rodape.append(icone, textoEtiquetas);

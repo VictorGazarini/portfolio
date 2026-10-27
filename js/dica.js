@@ -53,7 +53,7 @@ function novaLinha(tipo) {
   linha.className = "whitespace-pre-wrap";
   const texto = document.createElement("span");
   // A resposta fica um pouco mais clara que os comandos
-  if (tipo === "saida") texto.className = "text-gray-100";
+  if (tipo === "saida") texto.className = "text-texto";
   linha.append(texto, cursor); // o cursor vai junto para a linha nova
   terminal.append(linha);
   return texto;

@@ -23,19 +23,33 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap">
 
+  <!-- Tema (claro/escuro), aplicado antes da página aparecer, para não "piscar" o tema errado.
+       Vem do endereço (?tema=claro, colocado pelo js/tema.js ao clicar num link do site)
+       ou, se não vier, do que ficou salvo no navegador. -->
+  <script>
+    (function () {
+      var tema = new URLSearchParams(location.search).get("tema");
+      try {
+        if (tema) localStorage.setItem("tema", tema);
+        else tema = localStorage.getItem("tema");
+      } catch (erro) {}
+      if (tema === "claro") document.documentElement.dataset.tema = "claro";
+    })();
+  </script>
+
   <!-- CSS gerado pelo Tailwind (npm run dev / npm run build) -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body class="bg-black text-gray-100 font-mono">
+<body class="bg-fundo text-texto font-mono transition-colors duration-300">
 
   <!-- 1. Barra de navegação: faixa branca com borda preta em cima.
        sticky top-0: fica grudada no topo durante a rolagem (z-50: por cima de tudo) -->
-  <header class="sticky top-0 z-50 bg-white text-black border-t-8 border-black">
+  <header class="sticky top-0 z-50 bg-barra text-barra-texto border-t-8 border-barra-borda">
 
     <!-- Itens lado a lado: links na esquerda, hambúrguer na direita -->
     <!-- max-[359px]:text-xs: em celulares bem estreitos a letra diminui um pouco, para caber numa linha -->
-    <nav class="flex items-center justify-between px-6 md:px-12 lg:px-20 py-4 text-sm max-[359px]:text-xs md:text-base whitespace-nowrap">
+    <nav class="flex items-center justify-between px-4 sm:px-6 md:px-12 lg:px-20 py-4 text-sm max-[359px]:text-xs md:text-base whitespace-nowrap">
 
       <!-- Lado esquerdo: nome + links (no celular, só o nome; o resto fica no menu) -->
       <div class="flex items-center gap-4 md:gap-6 lg:gap-8">
@@ -48,28 +62,44 @@
         <a href="curriculo.html" target="_blank" rel="noopener" class="hover:underline">currículo ↗</a>
       </div>
 
-      <!-- Lado direito: botão hambúrguer. Quando o menu abre, o js/menu.js coloca
-           data-aberto no botão e as três linhas viram um X (classes group-data-aberto:) -->
-      <button id="botao-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu" class="group p-2 -mr-2">
-        <span class="block w-7 h-0.5 bg-black transition duration-300 group-data-aberto:translate-y-2 group-data-aberto:rotate-45"></span>
-        <span class="block w-7 h-0.5 bg-black mt-1.5 transition duration-300 group-data-aberto:opacity-0"></span>
-        <span class="block w-7 h-0.5 bg-black mt-1.5 transition duration-300 group-data-aberto:-translate-y-2 group-data-aberto:-rotate-45"></span>
-      </button>
+      <!-- Lado direito: botão de tema + botão hambúrguer -->
+      <div class="flex items-center gap-1 md:gap-3">
+
+        <!-- Botão de tema (js/tema.js): alterna entre o escuro (padrão) e o Solarized Light.
+             O sol aparece no tema escuro e a lua no claro (variante claro: do src/input.css) -->
+        <button id="botao-tema" aria-label="Mudar para o tema claro" class="p-1.5 hover:scale-110 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-5 md:size-6 claro:hidden" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg viewBox="0 0 24 24" class="size-5 md:size-6 hidden claro:block" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+
+        <!-- Botão hambúrguer. Quando o menu abre, o js/menu.js coloca
+             data-aberto no botão e as três linhas viram um X (classes group-data-aberto:) -->
+        <button id="botao-menu" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu" class="group p-1.5 -mr-1.5">
+          <span class="block w-6 md:w-7 h-0.5 bg-barra-texto transition duration-300 group-data-aberto:translate-y-2 group-data-aberto:rotate-45"></span>
+          <span class="block w-6 md:w-7 h-0.5 bg-barra-texto mt-1.5 transition duration-300 group-data-aberto:opacity-0"></span>
+          <span class="block w-6 md:w-7 h-0.5 bg-barra-texto mt-1.5 transition duration-300 group-data-aberto:-translate-y-2 group-data-aberto:-rotate-45"></span>
+        </button>
+      </div>
 
     </nav>
 
     <!-- Menu aberto pelo hambúrguer: cobre a tela, abaixo da barra.
          O atributo "hidden" esconde; o js/menu.js tira e coloca. -->
-    <div id="menu" hidden class="absolute inset-x-0 top-full h-dvh bg-black text-gray-100 border-t border-gray-800">
+    <div id="menu" hidden class="absolute inset-x-0 top-full h-dvh bg-fundo text-texto border-t border-borda-fraca">
       <nav class="flex flex-col gap-8 px-6 md:px-12 lg:px-20 py-12">
         <a href="#sobre" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">SOBRE MIM</a>
         <a href="#projetos" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">PROJETOS</a>
         <a href="#redes" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">REDES SOCIAIS</a>
         <a href="curriculo.html" target="_blank" rel="noopener" class="text-3xl md:text-5xl hover:translate-x-3 transition-transform">CURRÍCULO ↗</a>
-        <div class="flex gap-6 mt-6 text-sm text-gray-400">
-          <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="hover:text-white">LinkedIn ↗</a>
-          <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="hover:text-white">GitHub ↗</a>
-          <a href="mailto:gazarinivictor@gmail.com" class="hover:text-white">E-mail ↗</a>
+        <div class="flex gap-6 mt-6 text-sm text-suave">
+          <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" class="hover:text-destaque">LinkedIn ↗</a>
+          <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" class="hover:text-destaque">GitHub ↗</a>
+          <a href="mailto:gazarinivictor@gmail.com" class="hover:text-destaque">E-mail ↗</a>
         </div>
       </nav>
     </div>
@@ -85,12 +115,12 @@
       <div class="sticky top-0 h-screen overflow-hidden">
         <h1 class="sr-only">Victor Gazarini, Analista de Modern Workplace</h1>
         <!-- O JavaScript (js/olho.js) desenha a cena aqui dentro, ocupando a tela toda -->
-        <pre id="olho" aria-hidden="true" class="w-full h-full overflow-hidden text-gray-300 text-[8px] md:text-[10px] leading-[1.1] select-none [font-variant-ligatures:none]"></pre>
+        <pre id="olho" aria-hidden="true" class="w-full h-full overflow-hidden text-arte text-[8px] md:text-[10px] leading-[1.1] select-none [font-variant-ligatures:none]"></pre>
 
         <!-- Sessão de terminal: o js/dica.js digita os comandos letra por letra
              (whoami → nome e cargo → saiba mais) e o cursor fica piscando.
              Some (data-oculto) quando a pessoa rola a página. -->
-        <div id="terminal" aria-hidden="true" class="absolute bottom-8 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-3rem)] text-sm md:text-base leading-relaxed text-gray-300 select-none pointer-events-none [font-variant-ligatures:none] transition-opacity duration-500 data-oculto:opacity-0"></div>
+        <div id="terminal" aria-hidden="true" class="absolute bottom-8 left-1/2 -translate-x-1/2 w-max max-w-[calc(100%-3rem)] text-sm md:text-base leading-relaxed text-arte select-none pointer-events-none [font-variant-ligatures:none] transition-opacity duration-500 data-oculto:opacity-0"></div>
       </div>
     </section>
 
@@ -99,7 +129,7 @@
     <!-- 3. Sobre Mim: título à esquerda + texto à direita; embaixo, um parágrafo na largura toda -->
     <section id="sobre" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
       <div class="md:grid md:grid-cols-[14rem_1fr] lg:grid-cols-[18rem_1fr] md:gap-12 md:items-center">
-        <h2 data-glitch class="text-2xl md:text-4xl mb-6 md:mb-0">SOBRE MIM</h2>
+        <h2 data-glitch class="text-destaque text-2xl md:text-4xl mb-6 md:mb-0">SOBRE MIM</h2>
         <p class="text-sm md:text-base leading-relaxed md:text-justify">
           Sou Analista de Modern Workplace e resolvo problemas de infraestrutura com código.
           Administro um parque de mais de 30.000 endpoints com Microsoft Intune e ConfigMgr
@@ -121,7 +151,7 @@
 
     <!-- 4. Projetos: carrossel de cards; o último visível "sai" um pouco para a direita -->
     <section id="projetos" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
-      <h2 data-glitch class="text-2xl md:text-4xl mb-10 md:mb-14">PROJETOS</h2>
+      <h2 data-glitch class="text-destaque text-2xl md:text-4xl mb-10 md:mb-14">PROJETOS</h2>
 
       <!-- Área do carrossel: as setas ficam fora dela, uma de cada lado -->
       <div class="relative">
@@ -130,37 +160,37 @@
              o tópico "portfolio". Um card com data-repo="nome-do-repositório" sai
              sozinho quando aquele repositório vem do GitHub (evita card repetido). -->
         <ul id="trilho-projetos" class="flex gap-8 p-4 -m-4 scroll-px-4 overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none]">
-          <li data-repo="Custom-Badges-Creator-Shields.io" class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
-            <h3 class="text-base md:text-lg font-semibold">Gerador de Badges</h3>
+          <li data-repo="Custom-Badges-Creator-Shields.io" class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
+            <h3 class="text-cartao-titulo text-base md:text-lg font-semibold">Gerador de Badges</h3>
             <p class="text-sm mt-3 flex-1">Converte ícones SVG (Simple Icons) em badges base64 otimizados para URL, com saída em Markdown, HTML e URL. Open source (MIT).</p>
-            <p class="text-xs mt-4 opacity-70">Python · Flask · JS · Tailwind · Docker</p>
+            <p class="text-xs mt-4 text-detalhe opacity-70 claro:opacity-100">Python · Flask · JS · Tailwind · Docker</p>
           </li>
-          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
-            <h3 class="text-base md:text-lg font-semibold">Autopilot CSV Consolidator</h3>
+          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
+            <h3 class="text-cartao-titulo text-base md:text-lg font-semibold">Autopilot CSV Consolidator</h3>
             <p class="text-sm mt-3 flex-1">CLI que consolida CSVs de hardware hash do Autopilot e importa via Graph API, com validação de hostname, detecção de duplicados e menu navegável.</p>
-            <p class="text-xs mt-4 opacity-70">PowerShell · Graph API · Autopilot</p>
+            <p class="text-xs mt-4 text-detalhe opacity-70 claro:opacity-100">PowerShell · Graph API · Autopilot</p>
           </li>
-          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
-            <h3 class="text-base md:text-lg font-semibold">Migração de grupos no Entra ID</h3>
+          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
+            <h3 class="text-cartao-titulo text-base md:text-lg font-semibold">Migração de grupos no Entra ID</h3>
             <p class="text-sm mt-3 flex-1">Move dispositivos entre grupos via Graph com JSON batching (até 20 requisições por lote) e retry com backoff exponencial contra throttling.</p>
-            <p class="text-xs mt-4 opacity-70">PowerShell · Graph API · Entra ID</p>
+            <p class="text-xs mt-4 text-detalhe opacity-70 claro:opacity-100">PowerShell · Graph API · Entra ID</p>
           </li>
-          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-[#c9d0d9] text-black p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
-            <h3 class="text-base md:text-lg font-semibold">Co-gerenciados → Autopilot</h3>
+          <li class="snap-start shrink-0 w-64 md:w-72 lg:w-80 min-h-56 md:min-h-64 rounded-xl bg-cartao text-cartao-texto p-6 flex flex-col transition duration-300 hover:scale-[1.04]">
+            <h3 class="text-cartao-titulo text-base md:text-lg font-semibold">Co-gerenciados → Autopilot</h3>
             <p class="text-sm mt-3 flex-1">Migração de dispositivos co-gerenciados (SCCM) para o Autopilot, com tratamento de erro que separa falha real de "já é membro".</p>
-            <p class="text-xs mt-4 opacity-70">PowerShell · SCCM · Autopilot</p>
+            <p class="text-xs mt-4 text-detalhe opacity-70 claro:opacity-100">PowerShell · SCCM · Autopilot</p>
           </li>
         </ul>
 
         <!-- Setas: começam invisíveis (opacity-0). O js/projetos.js coloca o atributo
              data-visivel na seta do lado em que o mouse está, e ela aparece.
              focus-visible: quem navega pelo teclado (Tab) também vê a seta. -->
-        <button id="projeto-anterior" aria-label="Projeto anterior" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full lg:-translate-x-[calc(100%+1rem)] size-12 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
+        <button id="projeto-anterior" aria-label="Projeto anterior" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-full lg:-translate-x-[calc(100%+1rem)] size-12 rounded-full bg-cartao text-cartao-texto flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
           <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M19 12H5M11 6l-6 6 6 6"/>
           </svg>
         </button>
-        <button id="proximo-projeto" aria-label="Próximo projeto" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full lg:translate-x-[calc(100%+1rem)] size-12 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
+        <button id="proximo-projeto" aria-label="Próximo projeto" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full lg:translate-x-[calc(100%+1rem)] size-12 rounded-full bg-cartao text-cartao-texto flex items-center justify-center opacity-0 pointer-events-none data-visivel:opacity-100 data-visivel:pointer-events-auto focus-visible:opacity-100 focus-visible:pointer-events-auto hover:scale-110 transition duration-300">
           <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 12h14M13 6l6 6-6 6"/>
           </svg>
@@ -170,24 +200,24 @@
 
     <!-- 5. Redes Sociais: três círculos com ícones -->
     <section id="redes" data-surgir class="relative max-w-6xl mx-auto px-6 md:px-12 lg:px-20 py-20 md:py-28 scroll-mt-20">
-      <h2 data-glitch class="text-2xl md:text-4xl mb-10 md:mb-14">REDES SOCIAIS</h2>
+      <h2 data-glitch class="text-destaque text-2xl md:text-4xl mb-10 md:mb-14">REDES SOCIAIS</h2>
 
       <div class="flex gap-6 md:gap-10">
         <a href="https://www.linkedin.com/in/victorgazarini/" target="_blank" rel="noopener" aria-label="LinkedIn"
-           class="size-20 md:size-32 lg:size-36 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
-          <svg viewBox="0 0 24 24" class="size-8 md:size-12" fill="currentColor" aria-hidden="true">
+           class="size-20 md:size-32 lg:size-36 rounded-full bg-cartao text-cartao-texto flex items-center justify-center hover:scale-105 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-8 md:size-12 text-detalhe" fill="currentColor" aria-hidden="true">
             <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
           </svg>
         </a>
         <a href="https://github.com/VictorGazarini" target="_blank" rel="noopener" aria-label="GitHub"
-           class="size-20 md:size-32 lg:size-36 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
-          <svg viewBox="0 0 24 24" class="size-8 md:size-12" fill="currentColor" aria-hidden="true">
+           class="size-20 md:size-32 lg:size-36 rounded-full bg-cartao text-cartao-texto flex items-center justify-center hover:scale-105 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-8 md:size-12 text-detalhe" fill="currentColor" aria-hidden="true">
             <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
           </svg>
         </a>
         <a href="mailto:gazarinivictor@gmail.com" aria-label="E-mail"
-           class="size-20 md:size-32 lg:size-36 rounded-full bg-[#c9d0d9] text-black flex items-center justify-center hover:scale-105 transition-transform">
-          <svg viewBox="0 0 24 24" class="size-8 md:size-12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+           class="size-20 md:size-32 lg:size-36 rounded-full bg-cartao text-cartao-texto flex items-center justify-center hover:scale-105 transition-transform">
+          <svg viewBox="0 0 24 24" class="size-8 md:size-12 text-detalhe" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="2" y="4" width="20" height="16" rx="2"/>
             <path d="m22 7-10 6L2 7"/>
           </svg>
@@ -200,5 +230,6 @@
   <script src="js/projetos.js"></script>
   <script src="js/menu.js"></script>
   <script src="js/dica.js"></script>
+  <script src="js/tema.js"></script>
 </body>
 </html>

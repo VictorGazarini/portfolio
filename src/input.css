@@ -8,6 +8,26 @@
   --font-sans: "Fira Code", ui-monospace, monospace;
   --font-mono: "Fira Code", ui-monospace, monospace;
 
+  /* Cores do site por FUNÇÃO (e não pelo nome da cor). Cada uma vira classes
+     do Tailwind: --color-fundo vira bg-fundo, text-fundo, border-fundo...
+     Estes são os valores do tema escuro (o padrão). */
+  --color-fundo: #000000;         /* fundo da página */
+  --color-texto: #f3f4f6;         /* texto comum */
+  --color-forte: #ffffff;         /* texto em destaque (hover dos links) */
+  --color-suave: #9ca3af;         /* texto secundário (datas, etiquetas) */
+  --color-arte: #d1d5db;          /* o olho em ASCII e o terminal */
+  --color-borda: #374151;         /* bordas */
+  --color-borda-fraca: #1f2937;   /* bordas mais discretas */
+  --color-barra: #ffffff;         /* fundo da barra do topo */
+  --color-barra-texto: #000000;   /* texto e ícones da barra do topo */
+  --color-barra-borda: #000000;   /* faixa grossa em cima da barra */
+  --color-cartao: #c9d0d9;        /* cards, círculos das redes e setas */
+  --color-cartao-texto: #000000;  /* texto dos cards */
+  --color-cartao-titulo: #000000; /* título dos cards */
+  --color-cartao-hover: #ffffff;  /* card com o mouse em cima */
+  --color-destaque: #ffffff;      /* cor de acento: títulos e links com o mouse em cima */
+  --color-detalhe: #000000;       /* ícones e stacks dentro dos cards (no escuro: iguais ao texto do card) */
+
   /* Cursor de terminal piscando: cria a classe animate-piscar.
      step-end faz ele "acender e apagar" de uma vez, sem esmaecer, como num terminal */
   --animate-piscar: piscar 1.06s step-end infinite;
@@ -18,6 +38,46 @@
     }
   }
 }
+
+/* ===== Tema claro: Solarized Light =====
+   Quando o <html> tem data-tema="claro" (o js/tema.js coloca e tira),
+   as mesmas cores por função ganham os valores da paleta Solarized.
+   Papéis conforme o README oficial (CLAUDE/solarized/README.md, "Usage & Development"):
+   fundo base3, texto base00, destaque base01, secundário base1,
+   fundo realçado base2 com texto base01, e uma cor de acento. */
+[data-tema="claro"] {
+  --color-fundo: #fdf6e3;         /* base3: fundo */
+  /* Textos mais escuros que o padrão oficial do Solarized, para dar mais contraste */
+  --color-texto: #073642;         /* base02: texto comum */
+  --color-forte: #002b36;         /* base03: texto em destaque */
+  --color-suave: #586e75;         /* base01: secundário (datas, rótulos, etiquetas) */
+  --color-arte: #000000;          /* preto: mais escuro que a paleta, para o olho em ASCII ter o máximo de contraste */
+  --color-borda: #93a1a1;         /* base1 */
+  --color-borda-fraca: #eee8d5;   /* base2 */
+  /* A barra espelha o tema escuro: lá a faixa de cima tem a cor da página (preto)
+     e a barra a cor oposta (branco). Aqui: faixa creme e barra escura. */
+  --color-barra: #002b36;         /* base03: barra escura, em contraste com a página */
+  --color-barra-texto: #fdf6e3;   /* base3: texto claro na barra (no escuro: barra branca, texto preto) */
+  --color-barra-borda: #fdf6e3;   /* base3: a faixa grossa em cima tem a cor da página */
+  --color-cartao: #c9d0d9;        /* cards, círculos e setas: o mesmo cinza do tema escuro */
+  --color-cartao-texto: #073642;  /* base02: texto escuro sobre o cinza */
+  --color-cartao-titulo: #002b36; /* base03: título dos cards na cor dos outros títulos (a da barra) */
+  --color-cartao-hover: #fdf6e3;  /* base3 (no escuro: branco) */
+  --color-detalhe: #b58900;       /* yellow: ícones e stacks dentro dos cards */
+  /* Títulos e links com o mouse em cima: a mesma cor da barra (no escuro: branco) */
+  --color-destaque: #002b36;      /* base03 */
+}
+
+/* Barras de rolagem e campos do navegador acompanham o tema */
+:root {
+  color-scheme: dark;
+}
+[data-tema="claro"] {
+  color-scheme: light;
+}
+
+/* Variante "claro:": aplica uma classe só no tema claro (ex.: claro:hidden) */
+@custom-variant claro (&:where([data-tema="claro"], [data-tema="claro"] *));
 
 /* Impressão / "Salvar como PDF" do currículo: folha A4 com margem */
 @page {
