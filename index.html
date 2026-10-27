@@ -34,16 +34,18 @@
   <header class="sticky top-0 z-50 bg-white text-black border-t-8 border-black">
 
     <!-- Itens lado a lado: links na esquerda, hambúrguer na direita -->
-    <nav class="flex items-center justify-between px-6 md:px-12 lg:px-20 py-4 text-sm md:text-base">
+    <!-- max-[359px]:text-xs: em celulares bem estreitos a letra diminui um pouco, para caber numa linha -->
+    <nav class="flex items-center justify-between px-6 md:px-12 lg:px-20 py-4 text-sm max-[359px]:text-xs md:text-base whitespace-nowrap">
 
       <!-- Lado esquerdo: nome + links (no celular, só o nome; o resto fica no menu) -->
-      <div class="flex items-center gap-6 lg:gap-8">
+      <div class="flex items-center gap-4 md:gap-6 lg:gap-8">
         <a href="#inicio" class="font-semibold hover:underline">> victor_gazarini<span class="hidden md:inline"> |</span></a>
         <a href="#sobre" class="hidden md:inline hover:underline">sobre mim</a>
         <a href="#projetos" class="hidden md:inline hover:underline">projetos</a>
         <a href="#redes" class="hidden md:inline hover:underline">redes sociais</a>
-        <!-- Currículo: abre numa nova aba (target="_blank"), o portfólio fica aberto atrás -->
-        <a href="curriculo.html" target="_blank" rel="noopener" class="hidden md:inline hover:underline">currículo ↗</a>
+        <!-- Currículo: abre numa nova aba (target="_blank"), o portfólio fica aberto atrás.
+             É o único link que aparece também no celular (é o que o recrutador mais procura) -->
+        <a href="curriculo.html" target="_blank" rel="noopener" class="hover:underline">currículo ↗</a>
       </div>
 
       <!-- Lado direito: botão hambúrguer. Quando o menu abre, o js/menu.js coloca
